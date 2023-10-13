@@ -1,0 +1,16 @@
+{
+    "name": "bytes-nirav/cake-core-php",
+    "autoload": {
+        "psr-4": {
+            "BytesNirav\\CakeCorePhp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "nirav.dobariya",
+            "email": "nirav.dobariya@bytestechnolab.com"
+        }
+    ],
+    "require": {},
+    "minimum-stability": "dev"
+}
