@@ -1,6 +1,7 @@
 {
     "name": "bytes-nirav/cake-core-php",
     "autoload": {
+        "files": ["config/mydbpackage.php"],
         "psr-4": {
             "BytesNirav\\CakeCorePhp\\": "src/"
         }

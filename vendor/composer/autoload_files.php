@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     '320cde22f66dd4f5d3fd621d3e88b98f' => $vendorDir . '/symfony/polyfill-ctype/bootstrap.php',
+    'c02bd2da8c7b246b71dcb395ea38e94a' => $baseDir . '/config/mydbpackage.php',
 );
