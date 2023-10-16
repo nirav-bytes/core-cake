@@ -12,5 +12,11 @@
         }
     ],
     "require": {},
+    "extra": {
+        "my-db-package-config": {
+            "file": "config/mydbpackage.php",
+            "destination": "config/mydbpackage.php"
+        }
+    },
     "minimum-stability": "dev"
 }
