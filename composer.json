@@ -1,7 +1,6 @@
 {
     "name": "bytes-nirav/cake-core-php",
     "autoload": {
-        "files": ["config/mydbpackage.php"],
         "psr-4": {
             "BytesNirav\\CakeCorePhp\\": "src/"
         }
@@ -12,9 +11,6 @@
             "email": "nirav.dobariya@bytestechnolab.com"
         }
     ],
-    "require": {
-        "symfony/yaml": "^3.1",
-        "hassankhan/config": "^0.10.0"
-    },
+    "require": {},
     "minimum-stability": "dev"
 }
