@@ -11,7 +11,9 @@
             "email": "nirav.dobariya@bytestechnolab.com"
         }
     ],
-    "require": {},
+    "require": {
+        "phlak/config": "dev-master"
+    },
     "extra": {
         "my-db-package-config": {
             "file": "config/mydbpackage.php",
