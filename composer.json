@@ -5,6 +5,7 @@
             "BytesNirav\\CakeCorePhp\\": "src/"
         }
     },
+    "license": "MIT",
     "authors": [
         {
             "name": "nirav.dobariya",
@@ -12,13 +13,7 @@
         }
     ],
     "require": {
-        "phlak/config": "dev-master"
+        "phlak/config": "^0.3.0"
     },
-    "extra": {
-        "my-db-package-config": {
-            "file": "config/mydbpackage.php",
-            "destination": "config/mydbpackage.php"
-        }
-    },
-    "minimum-stability": "dev"
+    "minimum-stability": "stable"
 }
