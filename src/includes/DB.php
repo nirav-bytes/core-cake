@@ -1,4 +1,8 @@
 <?php
+namespace BytesNirav\CakeCorePhp\includes;
+
+use DateTime;
+use PDO;
 
 /**
  * Created by Bill Wheeler
@@ -16,12 +20,13 @@ class DB
 
     public function __construct($config)
     {
+        $config = $config->get('drivers.mysql');
         $dbSource = 'mysql:host=localhost;dbname='.$config['database'];
         $options = array(
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
         );
 
-        $this->dbm = new PDO($dbSource, $config['dbuser'], $config['dbpass'], $options);
+        $this->dbm = new PDO($dbSource, $config['username'], $config['password'], $options);
         $this->dbm->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     }

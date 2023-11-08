@@ -1,0 +1,21 @@
+---
+# Site configuration data for FreshTaxHelp.dev
+database: flm_tax_relief
+dbuser: root
+dbpass: bytes
+dbtable: contacts
+default_offer: 34
+fields:
+  - tax_debt
+  - first_name
+  - last_name
+  - email_address
+  - primary_phone
+  - alt_phone
+  - state
+  - enrolled_irs
+# the redirects aren't implemented yet
+redirects:
+    default: /thank-you.php
+    l3: /l3/thank-you.php
+    2step: /2step/thankyou/
