@@ -1,4 +1,5 @@
 <?php
+
 namespace BytesNirav\CakeCorePhp\process\routes;
 
 class Store
@@ -7,82 +8,58 @@ class Store
     private $fields;
     private $DB;
 
-    public function __construct($commonFields, $fields, $DB)
+    public function __construct($fields, $commonFields, $DB)
     {
-        $this->commonFields = $commonFields;
         $this->fields = $fields;
+        $this->commonFields = $commonFields;
         $this->DB = $DB;
+        $this->checkEmptyField();
+        $this->formDataProcessor();
     }
 
-    public function processForm()
+    public function checkEmptyField()
     {
-        $this->adjustDebtAmount();
+        $checkFieldData = new CheckFieldData($this->fields, $this->commonFields, $this->DB);
     }
 
-    private function adjustDebtAmount()
+    public function formDataProcessor()
     {
-        if ($_POST['LeadRouting'] == "LONG_FORM") {
-            $_POST['debt_amount'] = ($_POST['personal_loan'] == "yes") ? 10000 : 9000;
-        }
+        $formDataProcessor = new FormDataProcessor($this->fields, $this->commonFields);
+        $processedData = $formDataProcessor->getFieldData();
+
+        // Create an instance of Validationphone
+        $validate = new Validationphone();
+        $ValidationPhoneNumber = $validate->validatePhoneNumber($processedData);
+        $processedData = $ValidationPhoneNumber['processedData'];
+        $nd_odlv = $ValidationPhoneNumber['nd_odlv'];
+
+        // Create an instance of InfutorProcessor
+        $infutorData = new InfutorProcessor();
+        $neausterFire = $infutorData->processInfutorResponse($processedData);
+
+        $coookie = new CookieManager;
+        $coookie->setCookie('tax_debt', $processedData['tax_debt']);
+        $coookie->setCookie('first_name', $processedData['first_name']);
+        $coookie->setCookie('last_name', $processedData['last_name']);
+        $coookie->setCookie('primary_phone', $processedData['primary_phone']);
+        $coookie->setCookie('email_address', $processedData['email_address']);
+        $coookie->setCookie('state', $processedData['state']);
+
+
+        $formHandler = new FormDataHandler($neausterFire, $nd_odlv);
+        $formHandlerdata = $formHandler->processFormData();
+
+        // $checkUnivarsalLeadId = UniversalLeadid::authuniversalLeadid($formHandlerdata);
+        // Not working Check what is a real problem
+
+        echo"<pre>";
+        print_r($formHandlerdata);
+        exit;
+        $this->curlCall($neausterFire);
     }
 
-    public function checkField()
+    public function curlCall($fieldData)
     {
-        $requiredFields = ['debt_amount', 'email_address', 'primary_phone'];
-
-        if ($this->areFieldsEmpty($requiredFields)) {
-            $this->handleMissingFields();
-        }
-    }
-
-    private function areFieldsEmpty($fields)
-    {
-        return array_reduce($fields, function ($carry, $field) {
-            return $carry || empty(trim($_POST[$field]));
-        }, false);
-    }
-
-    private function handleMissingFields()
-    {
-        if ($_SERVER['HTTP_REFERER'] !== "") {
-            $redirectURL = $this->buildRedirectURL();
-            header("Location: $redirectURL");
-            exit;
-        } else {
-            header("Location: /thankyou.php");
-            exit;
-        }
-    }
-
-    private function buildRedirectURL()
-    {
-        $RefererHost = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
-        $RefererURI = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH);
-        $RefererQueryParam = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_QUERY);
-
-        $arrQueryParams = [];
-        parse_str($RefererQueryParam, $arrQueryParams);
-
-        $phoneNumber = preg_replace('/\D+/', '', $_POST['primary_phone']);
-
-        $arrParams = [
-            'debt_amount' => $_POST['debt_amount'],
-            'first_name' => $_POST['first_name'],
-            'last_name' => $_POST['last_name'],
-            'email_address' => $_POST['email_address'],
-            'state' => $_POST['state'],
-            'primary_phone' => $phoneNumber,
-            'error_post' => 1
-        ];
-
-        $arrQueryParams = array_merge($arrQueryParams, $arrParams);
-        $postString = http_build_query($arrQueryParams);
-
-        return "http://$RefererHost$RefererURI?$postString";
+        // Your curlCall logic here...
     }
 }
-
-
-// Example usage:
-$formProcessor = new Store($commonFields, $fields, $DB);
-$formProcessor->processForm();

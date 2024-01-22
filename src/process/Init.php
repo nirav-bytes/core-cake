@@ -3,6 +3,7 @@
 namespace BytesNirav\CakeCorePhp\process;
 
 use BytesNirav\CakeCorePhp\includes\DB;
+use BytesNirav\CakeCorePhp\process\routes\Store;
 use PHLAK\Config\Config;
 
 class Init
@@ -11,26 +12,25 @@ class Init
     private $domain;
     private $tld;
     private $server;
+    private $configFile;
     private $config;
-    private $config_wp;
     private $DB;
-    private $DB_WP;
 
     public function __construct()
     {
         session_start();
-        $this->server = $_SERVER['HTTP_HOST'];
-        $this->parseServer();
-        $this->loadConfig();
-        // $this->loadConfigWP();
-        $this->initializeDB();
+
+        $this->initializeServerInfo();
+        $this->initializeConfig();
+        $this->initializeDatabase();
     }
 
-    private function parseServer()
+    private function initializeServerInfo()
     {
+        $this->server = 'dev.easy-tax-relief.com';
         if (substr_count($this->server, '.') >= 2) {
             list($this->subdomain, $this->domain, $this->tld) = explode('.', $this->server);
-            if ($this->server == "dev.solvable.com") {
+            if ($this->server == "dev.easy-tax-relief.com") {
                 $this->tld = "dev";
             }
         } else {
@@ -38,38 +38,19 @@ class Init
         }
     }
 
-    private function loadConfig()
+    private function initializeConfig()
     {
-        $this->domain = "dev.solvable.com";
-        // $configFile = "config/{$this->domain}{$this->tld}.yaml";
-        $configFile = __DIR__ . "/config/stage.yaml";
-        $this->config = new Config($configFile);
+        $this->configFile = __DIR__ . "/config/{$this->tld}.yaml";
+        $this->config = new Config($this->configFile);
     }
 
-    private function loadConfigWP()
+    public function initializeDatabase()
     {
-        // $configFileWP = "config/{$this->domain}-wp.{$this->tld}.yaml";
-        $configFileWP = __DIR__ . "/config/stage.yaml";
-        $this->config_wp = new Config($configFileWP);
+        $db = new DB($this->config);
+        return $db;
     }
 
-    private function initializeDB()
-    {
-        try {
-            $this->DB = new DB($this->config);
-            // $this->DB_WP = new DB($this->config_wp);
-            return $this->DB;
-        } catch (\Exception $e) {
-            echo $e->getMessage();
-        }
-    }
-
-    public function getDBConnection()
-    {
-        return $this->DB;
-    }
-
-    public function getCommonFields()
+    public function processFields()
     {
         return array(
             'affid',
@@ -90,7 +71,7 @@ class Init
             'opt_in',
             'current_situation',
             'income',
-            'zip_code',
+            'zipcode',
             'employment_status',
             'current_situation_reason',
             'tag',
@@ -98,6 +79,7 @@ class Init
             'debt_amount',
             'personal_loan',
             'birth_date',
+            'address',
             'full_address_street',
             'full_address_city',
             'full_address_zip_code',
@@ -107,9 +89,4 @@ class Init
         );
     }
 
-    // Add other methods as needed
-
 }
-
-// Create an object of ConfigHandler
-// $configHandler = new Init();

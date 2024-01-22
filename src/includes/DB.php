@@ -1,4 +1,5 @@
 <?php
+
 namespace BytesNirav\CakeCorePhp\includes;
 
 use DateTime;
@@ -21,14 +22,13 @@ class DB
     public function __construct($config)
     {
         $config = $config->get('drivers.mysql');
-        $dbSource = 'mysql:host=localhost;dbname='.$config['database'];
+        $dbSource = 'mysql:host=localhost;dbname=' . $config['database'];
         $options = array(
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
         );
 
         $this->dbm = new PDO($dbSource, $config['username'], $config['password'], $options);
         $this->dbm->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
     }
 
     public function insert($table, $fieldData)
@@ -44,37 +44,37 @@ class DB
         $result = $this->dbm->exec($sql);
         $this->insertID = $this->dbm->lastInsertId();
 
-        if($result === false) return false;
+        if ($result === false) return false;
         return $result;
     }
 
     public function update($table, $fieldData, $where)
     {
         $updateData = $rawData = array();
-        foreach($fieldData as $field => $value) {
-            if($field == 'RAW') {
-                if(stripos($value,"sleep")!==FALSE || stripos($value,"SLEEP")!==FALSE  || stripos($value,"TRUNCATE")!==FALSE || stripos($value,"DROP")!==FALSE || stripos($value,"ALTER")!==FALSE) {
+        foreach ($fieldData as $field => $value) {
+            if ($field == 'RAW') {
+                if (stripos($value, "sleep") !== FALSE || stripos($value, "SLEEP") !== FALSE  || stripos($value, "TRUNCATE") !== FALSE || stripos($value, "DROP") !== FALSE || stripos($value, "ALTER") !== FALSE) {
                     continue;
                 }
                 $rawData[] = $value;
                 continue;
             }
-            $updateData[] = $field.' = '.$this->dbm->quote($value);
+            $updateData[] = $field . ' = ' . $this->dbm->quote($value);
         }
 
         $rawString = "";
         $updateString = implode(', ', $updateData);
-        if(!empty($rawData)){
+        if (!empty($rawData)) {
             $rawString = implode(', ', $rawData);
         }
 
-        if($rawString!="")
+        if ($rawString != "")
             $sql = "UPDATE $table SET $updateString, $rawString WHERE $where";
         else
             $sql = "UPDATE $table SET $updateString WHERE $where";
         $result = $this->dbm->exec($sql);
 
-        if($result === false) return false;
+        if ($result === false) return false;
         return $result;
     }
 
@@ -90,7 +90,7 @@ class DB
     private function quote($data)
     {
         $quotedData = [];
-        foreach($data as $value) {
+        foreach ($data as $value) {
             $quotedData[] = $this->dbm->quote($value);
         }
         return $quotedData;
